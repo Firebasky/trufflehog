@@ -1,7 +1,7 @@
 //go:build detectors
 // +build detectors
 
-package dotmailer
+package brandfetch
 
 import (
 	"context"
@@ -16,16 +16,15 @@ import (
 	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detectorspb"
 )
 
-func TestDotmailer_FromChunk(t *testing.T) {
+func TestBrandfetch_FromChunk(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	testSecrets, err := common.GetSecret(ctx, "trufflehog-testing", "detectors1")
+	testSecrets, err := common.GetSecret(ctx, "trufflehog-testing", "detectors6")
 	if err != nil {
 		t.Fatalf("could not get test secrets from GCP: %s", err)
 	}
-	secret := testSecrets.MustGetField("DOTMAILER")
-	pass := testSecrets.MustGetField("DOTMAILER_PASS")
-	inactiveSecret := testSecrets.MustGetField("DOTMAILER_INACTIVE")
+	secret := testSecrets.MustGetField("BRANDFETCH_V2")
+	inactiveSecret := testSecrets.MustGetField("BRANDFETCH_V2_INACTIVE")
 
 	type args struct {
 		ctx    context.Context
@@ -44,12 +43,12 @@ func TestDotmailer_FromChunk(t *testing.T) {
 			s:    Scanner{},
 			args: args{
 				ctx:    context.Background(),
-				data:   []byte(fmt.Sprintf("You can find a dotmailer secret %s within dotmailer pass %s", secret, pass)),
+				data:   []byte(fmt.Sprintf("You can find a brandfetch secret %s within", secret)),
 				verify: true,
 			},
 			want: []detectors.Result{
 				{
-					DetectorType: detectorspb.DetectorType_Dotmailer,
+					DetectorType: detectorspb.DetectorType_Brandfetch,
 					Verified:     true,
 				},
 			},
@@ -60,12 +59,12 @@ func TestDotmailer_FromChunk(t *testing.T) {
 			s:    Scanner{},
 			args: args{
 				ctx:    context.Background(),
-				data:   []byte(fmt.Sprintf("You can find a dotmailer secret %s within dotmailer pass %s but not valid ", inactiveSecret, pass)), // the secret would satisfy the regex but not pass validation
+				data:   []byte(fmt.Sprintf("You can find a brandfetch secret %s within but not valid", inactiveSecret)), // the secret would satisfy the regex but not pass validation
 				verify: true,
 			},
 			want: []detectors.Result{
 				{
-					DetectorType: detectorspb.DetectorType_Dotmailer,
+					DetectorType: detectorspb.DetectorType_Brandfetch,
 					Verified:     false,
 				},
 			},
@@ -88,17 +87,18 @@ func TestDotmailer_FromChunk(t *testing.T) {
 			s := Scanner{}
 			got, err := s.FromData(tt.args.ctx, tt.args.verify, tt.args.data)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Dotmailer.FromData() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Brandfetch.FromData() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			for i := range got {
 				if len(got[i].Raw) == 0 {
-					t.Fatal("no raw secret present")
+					t.Fatalf("no raw secret present: \n %+v", got[i])
 				}
 				got[i].Raw = nil
+				got[i].ExtraData = nil
 			}
 			if diff := pretty.Compare(got, tt.want); diff != "" {
-				t.Errorf("Dotmailer.FromData() %s diff: (-got +want)\n%s", tt.name, diff)
+				t.Errorf("Brandfetch.FromData() %s diff: (-got +want)\n%s", tt.name, diff)
 			}
 		})
 	}

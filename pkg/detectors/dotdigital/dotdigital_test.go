@@ -1,8 +1,7 @@
-package brandfetch
+package dotdigital
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -12,38 +11,26 @@ import (
 )
 
 var (
-	validPattern   = "uHOAdwfQ7sD2yOpur72UqyUeIqnFwILOIlEPyBtJ"
-	complexPattern = `
-	func main() {
-		url := "https://api.example.com/v1/resource"
+	validPattern = `
+		# Configuration File: config.yaml
+		database:
+			host: $DB_HOST
+			port: $DB_PORT
 
-		// Create a new request with the secret as a header
-		req, err := http.NewRequest("GET", url, http.NoBody)
-		if err != nil {
-			fmt.Println("Error creating request:", err)
-			return
-		}
-		
-		brandfetchAPIKey := "uHOAdwfQ7sD2yOpur72UqyUeIqnFwILOIlEPyBtJ"
-		req.Header.Set("x-api-key", brandfetchAPIKey) // brandfetch secret
+		api:
+			auth_type: "Basic"
+			dotdigital_email: "apiuser-trq6zw9mmdlt@apiconnector.com"
+			dotdigital_password: "N{w44mqa'2si(zY8"
+			base_url: "https://api.example.com/$api_version/example"
+			response_code: 200
 
-		// Perform the request
-		client := &http.Client{}
-		resp, _ := client.Do(req)
-		defer resp.Body.Close()
-
-		// Check response status
-		if resp.StatusCode == http.StatusOK {
-			fmt.Println("Request successful!")
-		} else {
-			fmt.Println("Request failed with status:", resp.Status)
-		}
-	}
+		# Notes:
+		# - The above credentials should only be used in a secure environment.
 	`
-	invalidPattern = "yUeIqnFwILOIlEPyBt+=JOAdwfQ7sD2uHOAdwf2U[qy]UeIqnFwILOIlEPyBtJ^"
+	secrets = []string{"apiuser-trq6zw9mmdlt@apiconnector.comN{w44mqa'2si(zY8"}
 )
 
-func TestBrandFetch_Pattern(t *testing.T) {
+func TestDotdigital_Pattern(t *testing.T) {
 	d := Scanner{}
 	ahoCorasickCore := ahocorasick.NewAhoCorasickCore([]detectors.Detector{d})
 
@@ -54,18 +41,8 @@ func TestBrandFetch_Pattern(t *testing.T) {
 	}{
 		{
 			name:  "valid pattern",
-			input: fmt.Sprintf("brandfetch credentials: %s", validPattern),
-			want:  []string{validPattern},
-		},
-		{
-			name:  "valid pattern - complex",
-			input: complexPattern,
-			want:  []string{validPattern},
-		},
-		{
-			name:  "invalid pattern",
-			input: fmt.Sprintf("brandfetch credentials: %s", invalidPattern),
-			want:  nil,
+			input: validPattern,
+			want:  secrets,
 		},
 	}
 
