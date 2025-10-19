@@ -86,6 +86,7 @@ import (
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/azuresearchadminkey"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/azuresearchquerykey"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/baidu"
+	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/baidu2"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/baiduapikey"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/bailian"
 	bannerbearv1 "github.com/trufflesecurity/trufflehog/v3/pkg/detectors/bannerbear/v1"
@@ -1765,6 +1766,7 @@ func buildDetectorList() []detectors.Detector {
 		&alibabadm.Scanner{},
 		&tencentak.Scanner{},
 		&alibabaak.Scanner{},
+		&baidu2.Scanner{},
 	}
 }
 

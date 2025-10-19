@@ -20,7 +20,7 @@ func TestYuQue_Pattern(t *testing.T) {
 	//	fmt.Printf(tokenMatch)
 	//}
 	// 用户的Access Key ID和Secret Access Key
-	AK, SK := "f540f6ac0db3464680c5296a0db91757", "4f77e0685ad8462b8e9888bd69ae1914"
+	AK, SK := "", ""
 	ENDPOINT := "bcc.bj.baidubce.com"
 	bccClient, err := bcc.NewClient(AK, SK, ENDPOINT)
 	result, err := bccClient.ListZone()

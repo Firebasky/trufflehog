@@ -1,4 +1,4 @@
-package baidu
+package baidu2
 
 import (
 	"github.com/baidubce/bce-sdk-go/services/bcc"
@@ -41,8 +41,8 @@ var (
 	defaultClient = common.SaneHttpClient()
 
 	// Make sure that your group is surrounded in boundary characters such as below to reduce false positives.
-	keyPat = regexp.MustCompile(`\b([a-zA-Z0-9]{32})\b`)
-	idPat  = regexp.MustCompile(`\b(ALTAK[a-zA-Z0-9]{17,21})[\"';\s]*`)
+	keyPat = regexp.MustCompile(`\b([a-z0-9]{32})\b`)
+	idPat  = regexp.MustCompile(`\b([a-z0-9]{32})[\"';\s]*`)
 )
 
 // Keywords are used for efficiently pre-filtering chunks.
@@ -106,7 +106,7 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 			resIdMatch := strings.TrimSpace(idMatch[1])
 
 			s1 := detectors.Result{
-				DetectorType: detectorspb.DetectorType_Baidu,
+				DetectorType: detectorspb.DetectorType_Baidu2,
 				Raw:          []byte(resIdMatch + ":" + resMatch),
 				RawV2:        []byte(resMatch),
 			}
@@ -141,5 +141,5 @@ func verifyBaidu(ctx context.Context, client *http.Client, resIdMatch, resMatch 
 }
 
 func (s Scanner) Type() detectorspb.DetectorType {
-	return detectorspb.DetectorType_Baidu
+	return detectorspb.DetectorType_Baidu2
 }
