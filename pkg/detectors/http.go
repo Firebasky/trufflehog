@@ -19,10 +19,11 @@ const DefaultResponseTimeout = 10 * time.Second
 
 func userAgent() string {
 	if len(feature.UserAgentSuffix.Load()) > 0 {
-		return "TruffleHog " + feature.UserAgentSuffix.Load()
+		return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
 	}
-	return "TruffleHog"
+	return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
 }
+
 
 func init() {
 	DetectorHttpClientWithLocalAddresses = NewDetectorHttpClient(
