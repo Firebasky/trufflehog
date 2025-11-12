@@ -45,6 +45,7 @@ var (
 	// Make sure that your group is surrounded in boundary characters such as below to reduce false positives.
 	keyPat = regexp.MustCompile(`\b([a-zA-Z0-9]{30})\b`)
 	// 匹配 LTAI 开头，后面跟着 12、16、17、18、20、21、22 位的 alnum 字符串
+	// 16,20,22,24,26
 	idPat = regexp.MustCompile(`\b(LTAI[a-zA-Z0-9]{12,22})[\"';\s]*`)
 )
 
