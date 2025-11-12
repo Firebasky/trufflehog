@@ -47,6 +47,8 @@ var (
 	// 匹配 LTAI 开头，后面跟着 12、16、17、18、20、21、22 位的 alnum 字符串
 	// 16,20,22,24,26
 	idPat = regexp.MustCompile(`\b(LTAI[a-zA-Z0-9]{12,22})[\"';\s]*`)
+	// old
+	idPat2 = regexp.MustCompile(`\b([a-zA-Z0-9]{16})["';\s]*`)
 )
 
 // Keywords are used for efficiently pre-filtering chunks.
@@ -123,13 +125,19 @@ func (s Scanner) getClient() *http.Client {
 func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (results []detectors.Result, err error) {
 	dataStr := string(data)
 	matches := keyPat.FindAllStringSubmatch(dataStr, -1)
-	idMatches := idPat.FindAllStringSubmatch(dataStr, -1)
+
+	idMatches1 := idPat.FindAllStringSubmatch(dataStr, -1)   // LTAI...
+	idMatches2 := idPat2.FindAllStringSubmatch(dataStr, -1)  // [a-zA-Z0-9]{16}
+
+	// 合并 ID 列表（保留原始结构：[][]string）
+	var allIdMatches [][]string
+	allIdMatches = append(allIdMatches, idMatches1...)
+	allIdMatches = append(allIdMatches, idMatches2...)
 
 	for _, match := range matches {
 		resMatch := strings.TrimSpace(match[1])
 
-		for _, idMatch := range idMatches {
-
+		for _, idMatch := range allIdMatches {
 			resIdMatch := strings.TrimSpace(idMatch[1])
 
 			s1 := detectors.Result{
@@ -150,7 +158,7 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 	}
 
 	return results, nil
-}
+}		
 
 func verifyAlibaba(ctx context.Context, client *http.Client, resIdMatch, resMatch string) (bool, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, alibabaURL, nil)
