@@ -1146,6 +1146,21 @@ const (
 	DetectorType_PhraseAccessToken                       DetectorType = 1037
 	DetectorType_Photoroom                               DetectorType = 1038
 	DetectorType_JWT                                     DetectorType = 1039
+
+	DetectorType_DingDoc     DetectorType = 2026
+	DetectorType_YuQue       DetectorType = 2027
+	DetectorType_BaiLian     DetectorType = 2028
+	DetectorType_Baidu       DetectorType = 2029
+	DetectorType_Tencent     DetectorType = 2030
+	DetectorType_Volcengine  DetectorType = 2031
+	DetectorType_Huawei      DetectorType = 2032
+	DetectorType_Doubao      DetectorType = 2033
+	DetectorType_BaiduApiKey DetectorType = 2034
+	DetectorType_HunYuan     DetectorType = 2035
+	DetectorType_Alibabadm   DetectorType = 2036
+	DetectorType_TencentAK   DetectorType = 2037
+	DetectorType_Alibabaak   DetectorType = 2038
+	DetectorType_Baidu2      DetectorType = 2039
 )
 
 // Enum value maps for DetectorType.
@@ -2187,6 +2202,21 @@ var (
 		1037: "PhraseAccessToken",
 		1038: "Photoroom",
 		1039: "JWT",
+
+		2026: "DingDoc",
+		2027: "YuQue",
+		2028: "BaiLian",
+		2029: "Baidu",
+		2030: "Tencent",
+		2031: "Volcengine",
+		2032: "Huawei",
+		2033: "Doubao",
+		2034: "BaiduApiKey",
+		2035: "HunYuan",
+		2036: "Alibabadm",
+		2037: "TencentAK",
+		2038: "Alibabaak",
+		2039: "Baidu2",
 	}
 	DetectorType_value = map[string]int32{
 		"Alibaba":                               0,
@@ -3225,6 +3255,21 @@ var (
 		"PhraseAccessToken":                 1037,
 		"Photoroom":                         1038,
 		"JWT":                               1039,
+
+		"DingDoc":     2026,
+		"YuQue":       2027,
+		"BaiLian":     2028,
+		"Baidu":       2029,
+		"Tencent":     2030,
+		"Volcengine":  2031,
+		"Huawei":      2032,
+		"Doubao":      2033,
+		"BaiduApiKey": 2034,
+		"HunYuan":     2035,
+		"Alibabadm":   2036,
+		"TencentAK":   2037,
+		"Alibabaak":   2038,
+		"Baidu2":      2039,
 	}
 )
 

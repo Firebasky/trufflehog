@@ -461,7 +461,7 @@ func (s *Source) scanItem(ctx context.Context, chunksChan chan *sources.Chunk, c
 	s.scanAuth(ctx, chunksChan, metadata, item.Auth, item.Request.URL)
 	metadata.LocationType = source_metadatapb.PostmanLocationType_UNKNOWN_POSTMAN
 
-	ctx.Logger().V(3).Info("Finished scanning item", "item_uid", item.Uid)
+	ctx.Logger().V(3).Info("item", "item_uid", item.Uid)
 }
 
 func (s *Source) scanEvent(ctx context.Context, chunksChan chan *sources.Chunk, metadata Metadata, event Event) {
