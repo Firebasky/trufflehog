@@ -1049,8 +1049,22 @@ enum DetectorType {
   PhraseAccessToken = 1037;
   Photoroom = 1038;
   JWT = 1039;
-  BitcoinWIF = 2040;
-  EthereumPrivateKey = 2041;
+  DingDoc             = 2026;
+  YuQue               = 2027;
+  BaiLian             = 2028;
+  Baidu               = 2029;
+  Tencent             = 2030;
+  Volcengine          = 2031;
+  Huawei              = 2032;
+  Doubao              = 2033;
+  BaiduApiKey         = 2034;
+  HunYuan             = 2035;
+  Alibabadm           = 2036;
+  TencentAK           = 2037;
+  Alibabaak           = 2038;
+  Baidu2              = 2039;
+  BitcoinWIF          = 2040;
+  EthereumPrivateKey  = 2041;
 }
 
 message Result {
