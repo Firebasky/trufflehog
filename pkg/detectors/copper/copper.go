@@ -2,9 +2,11 @@ package copper
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	regexp "github.com/wasilibs/go-re2"
 
@@ -24,16 +26,13 @@ var (
 	client = common.SaneHttpClient()
 
 	// Make sure that your group is surrounded in boundary characters such as below to reduce false positives.
-	emailPat = regexp.MustCompile(common.EmailPattern)
-	keyPat   = regexp.MustCompile(detectors.PrefixRegex([]string{"copper"}) + `\b([a-f0-9]{32})\b`)
+	keyPat = regexp.MustCompile(detectors.PrefixRegex([]string{"copper"}) + `\b([a-z0-9]{32})\b`)
+	idPat  = regexp.MustCompile(`\b([a-z0-9]{4,25}@[a-zA-Z0-9]{2,12}.[a-zA-Z0-9]{2,6})\b`)
 )
 
-func (s Scanner) Type() detectorspb.DetectorType {
-	return detectorspb.DetectorType_Copper
-}
-
-func (s Scanner) Description() string {
-	return "Copper is a CRM platform that helps businesses manage their relationships with customers and leads. Copper API keys can be used to access and modify customer data and interactions."
+type UserApiResponse struct {
+	Id    int    `json:"id"`
+	Email string `json:"email"`
 }
 
 // Keywords are used for efficiently pre-filtering chunks.
@@ -46,28 +45,24 @@ func (s Scanner) Keywords() []string {
 func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (results []detectors.Result, err error) {
 	dataStr := string(data)
 
-	var emails, apiKeys = make(map[string]struct{}), make(map[string]struct{})
+	matches := keyPat.FindAllStringSubmatch(dataStr, -1)
+	idmatches := idPat.FindAllStringSubmatch(dataStr, -1)
 
-	for _, match := range emailPat.FindAllStringSubmatch(dataStr, -1) {
-		emails[match[1]] = struct{}{}
-	}
+	for _, match := range matches {
+		resMatch := strings.TrimSpace(match[1])
+		for _, idmatch := range idmatches {
+			resIdMatch := strings.TrimSpace(idmatch[1])
 
-	for _, match := range keyPat.FindAllStringSubmatch(dataStr, -1) {
-		apiKeys[match[1]] = struct{}{}
-	}
-
-	for email := range emails {
-		for apiKey := range apiKeys {
 			s1 := detectors.Result{
 				DetectorType: detectorspb.DetectorType_Copper,
-				Raw:          []byte(apiKey),
-				RawV2:        []byte(apiKey + email),
+				Raw:          []byte(resMatch),
+				RawV2:        []byte(resMatch + resIdMatch),
 			}
 
 			if verify {
-				isVerified, verificationErr := verifyCopper(ctx, client, email, apiKey)
+				isVerified, verificationErr := verifyCopper(ctx, client, resIdMatch, resMatch)
 				s1.Verified = isVerified
-				s1.SetVerificationError(verificationErr, apiKey)
+				s1.SetVerificationError(verificationErr, resMatch)
 			}
 
 			results = append(results, s1)
@@ -79,33 +74,58 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 	return results, nil
 }
 
-func verifyCopper(ctx context.Context, client *http.Client, emailID, apiKey string) (bool, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://api.copper.com/developer_api/v1/account", http.NoBody)
+func verifyCopper(ctx context.Context, client *http.Client, email, apiKey string) (bool, error) {
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		"https://api.copper.com/developer_api/v1/users/me",
+		http.NoBody,
+	)
 	if err != nil {
 		return false, err
 	}
-
 	req.Header.Add("X-PW-AccessToken", apiKey)
 	req.Header.Add("X-PW-Application", "developer_api")
-	req.Header.Add("X-PW-UserEmail", emailID)
+	req.Header.Add("X-PW-UserEmail", email)
 	req.Header.Add("Content-Type", "application/json")
-
-	resp, err := client.Do(req)
+	res, err := client.Do(req)
 	if err != nil {
 		return false, err
 	}
-
 	defer func() {
-		_, _ = io.Copy(io.Discard, resp.Body)
-		_ = resp.Body.Close()
+		_, _ = io.Copy(io.Discard, res.Body)
+		_ = res.Body.Close()
 	}()
 
-	switch resp.StatusCode {
+	switch res.StatusCode {
 	case http.StatusOK:
-		return true, nil
+		respBytes, err := io.ReadAll(res.Body)
+		if err != nil {
+			return false, err
+		}
+
+		var respBody UserApiResponse
+		if err := json.Unmarshal(respBytes, &respBody); err != nil {
+			return false, err
+		}
+
+		// strict verification with email in credentials
+		if respBody.Email == email {
+			return true, nil
+		}
+
+		return false, fmt.Errorf("email mismatch in verification response")
 	case http.StatusUnauthorized:
 		return false, nil
 	default:
-		return false, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		return false, fmt.Errorf("unexpected status code :%d", res.StatusCode)
 	}
+}
+
+func (s Scanner) Type() detectorspb.DetectorType {
+	return detectorspb.DetectorType_Copper
+}
+
+func (s Scanner) Description() string {
+	return "Copper is a CRM platform that helps businesses manage their relationships with customers and leads. Copper API keys can be used to access and modify customer data and interactions."
 }

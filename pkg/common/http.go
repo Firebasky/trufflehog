@@ -108,6 +108,45 @@ func NewCustomTransport(T http.RoundTripper) *CustomTransport {
 	return &CustomTransport{T}
 }
 
+type InstrumentedTransport struct {
+	T http.RoundTripper
+}
+
+func (t *InstrumentedTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+
+	sanitizedURL := sanitizeURL(req.URL.String())
+
+	// increment counter for the URL
+	recordHTTPRequest(sanitizedURL)
+
+	// Record start time for latency measurement
+	start := time.Now()
+
+	resp, err := t.T.RoundTrip(req)
+
+	// Time the latency
+	duration := time.Since(start)
+
+	if err != nil {
+		recordNetworkError(sanitizedURL)
+		return nil, err
+	}
+
+	if resp != nil {
+		// record latency, response size and increment counter for non-200 status code
+		recordHTTPResponse(sanitizedURL, resp.StatusCode, duration.Seconds(), resp.ContentLength)
+	}
+
+	return resp, err
+}
+
+func NewInstrumentedTransport(T http.RoundTripper) *InstrumentedTransport {
+	if T == nil {
+		T = http.DefaultTransport
+	}
+	return &InstrumentedTransport{T}
+}
+
 func ConstantResponseHttpClient(statusCode int, body string) *http.Client {
 	return &http.Client{
 		Timeout: DefaultResponseTimeout,
@@ -159,7 +198,7 @@ func WithRetryWaitMax(wait time.Duration) ClientOption {
 func PinnedRetryableHttpClient() *http.Client {
 	httpClient := retryablehttp.NewClient()
 	httpClient.Logger = nil
-	httpClient.HTTPClient.Transport = NewCustomTransport(&http.Transport{
+	httpClient.HTTPClient.Transport = NewInstrumentedTransport(NewCustomTransport(&http.Transport{
 		TLSClientConfig: &tls.Config{
 			RootCAs: PinnedCertPool(),
 		},
@@ -173,7 +212,7 @@ func PinnedRetryableHttpClient() *http.Client {
 		IdleConnTimeout:       90 * time.Second,
 		TLSHandshakeTimeout:   10 * time.Second,
 		ExpectContinueTimeout: 1 * time.Second,
-	})
+	}))
 	return httpClient.StandardClient()
 }
 
@@ -181,7 +220,7 @@ func RetryableHTTPClient(opts ...ClientOption) *http.Client {
 	httpClient := retryablehttp.NewClient()
 	httpClient.RetryMax = 3
 	httpClient.Logger = nil
-	httpClient.HTTPClient.Transport = NewCustomTransport(nil)
+	httpClient.HTTPClient.Transport = NewInstrumentedTransport(NewCustomTransport(nil))
 
 	for _, opt := range opts {
 		opt(httpClient)
@@ -195,7 +234,7 @@ func RetryableHTTPClientTimeout(timeOutSeconds int64, opts ...ClientOption) *htt
 	httpClient.RetryMax = 3
 	httpClient.Logger = nil
 	httpClient.HTTPClient.Timeout = time.Duration(timeOutSeconds) * time.Second
-	httpClient.HTTPClient.Transport = NewCustomTransport(nil)
+	httpClient.HTTPClient.Transport = NewInstrumentedTransport(NewCustomTransport(nil))
 
 	for _, opt := range opts {
 		opt(httpClient)
@@ -223,7 +262,7 @@ var saneTransport = &http.Transport{
 func SaneHttpClient() *http.Client {
 	httpClient := &http.Client{}
 	httpClient.Timeout = DefaultResponseTimeout
-	httpClient.Transport = NewCustomTransport(saneTransport)
+	httpClient.Transport = NewInstrumentedTransport(NewCustomTransport(saneTransport))
 	return httpClient
 }
 
@@ -231,6 +270,6 @@ func SaneHttpClient() *http.Client {
 func SaneHttpClientTimeOut(timeout time.Duration) *http.Client {
 	httpClient := &http.Client{}
 	httpClient.Timeout = timeout
-	httpClient.Transport = NewCustomTransport(nil)
+	httpClient.Transport = NewInstrumentedTransport(NewCustomTransport(nil))
 	return httpClient
 }
