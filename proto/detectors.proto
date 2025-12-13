@@ -1048,6 +1048,8 @@ enum DetectorType {
   HashiCorpVaultAuth = 1036;
   PhraseAccessToken = 1037;
   Photoroom = 1038;
+  BitcoinWIF = 2040;
+  EthereumPrivateKey = 2041;
 }
 
 message Result {

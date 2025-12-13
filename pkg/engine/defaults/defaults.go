@@ -101,6 +101,7 @@ import (
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/bitbar"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/bitbucketapppassword"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/bitcoinaverage"
+	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/bitcoinwif"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/bitfinex"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/bitlyaccesstoken"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/bitmex"
@@ -268,6 +269,7 @@ import (
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/enigma"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/envoyapikey"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/eraser"
+	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/ethereumprivatekey"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/etherscan"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/ethplorer"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/eventbrite"
@@ -972,6 +974,8 @@ func buildDetectorList() []detectors.Detector {
 		&bitbar.Scanner{},
 		&bitbucketapppassword.Scanner{},
 		&bitcoinaverage.Scanner{},
+		&bitcoinwif.Scanner{},
+		&ethereumprivatekey.Scanner{},
 		&bitfinex.Scanner{},
 		&bitlyaccesstoken.Scanner{},
 		&bitmex.Scanner{},
