@@ -90,6 +90,12 @@ func (p *PlainPrinter) Print(_ context.Context, r *detectors.ResultWithMetadata)
 	if out.DetectorType == "2035" {
 		out.DetectorType = "HunYuan"
 	}
+	if out.DetectorType == "2040" {
+		out.DetectorType = "BitcoinWIF"
+	}
+	if out.DetectorType == "2041" {
+		out.DetectorType = "EthereumPrivateKey"
+	}
 	printer.Printf("Detector Type: %s\n", out.DetectorType)
 	printer.Printf("Decoder Type: %s\n", out.DecoderType)
 	printer.Printf("Raw result: %s\n", whitePrinter.Sprint(out.Raw))

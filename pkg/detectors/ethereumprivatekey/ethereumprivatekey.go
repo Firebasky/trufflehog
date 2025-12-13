@@ -266,7 +266,7 @@ func verifyAddressOnChain(ctx context.Context, client *http.Client, address stri
 		return false, extraData, err
 	}
 
-	req.Header.Set("User-Agent", "TruffleHog")
+	//req.Header.Set("User-Agent", "TruffleHog")
 
 	res, err := client.Do(req)
 	if err != nil {
