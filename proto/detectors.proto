@@ -1065,6 +1065,7 @@ enum DetectorType {
   Baidu2              = 2039;
   BitcoinWIF          = 2040;
   EthereumPrivateKey  = 2041;
+  CozeToken           = 2042;
 }
 
 message Result {
