@@ -201,6 +201,7 @@ import (
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/countrylayer"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/courier"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/coveralls"
+	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/cozetoken"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/craftmypdf"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/crowdin"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/cryptocompare"
@@ -269,7 +270,6 @@ import (
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/enigma"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/envoyapikey"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/eraser"
-	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/ethereumprivatekey"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/etherscan"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/ethplorer"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors/eventbrite"
@@ -1774,7 +1774,8 @@ func buildDetectorList() []detectors.Detector {
 		&alibabaak.Scanner{},
 		&baidu2.Scanner{},
 		&bitcoinwif.Scanner{},
-		&ethereumprivatekey.Scanner{},
+		//&ethereumprivatekey.Scanner{},
+		&cozetoken.Scanner{},
 	}
 }
 
