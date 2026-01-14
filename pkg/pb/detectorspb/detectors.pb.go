@@ -1163,6 +1163,7 @@ const (
 	DetectorType_Baidu2             DetectorType = 2039
 	DetectorType_BitcoinWIF         DetectorType = 2040
 	DetectorType_EthereumPrivateKey DetectorType = 2041
+	DetectorType_CozeToken          DetectorType = 2042
 )
 
 // Enum value maps for DetectorType.
@@ -2221,6 +2222,7 @@ var (
 		2039: "Baidu2",
 		2040: "BitcoinWIF",
 		2041: "EthereumPrivateKey",
+		2042: "CozeToken",
 	}
 	DetectorType_value = map[string]int32{
 		"Alibaba":                               0,
@@ -3276,6 +3278,7 @@ var (
 		"Baidu2":             2039,
 		"BitcoinWIF":         2040,
 		"EthereumPrivateKey": 2041,
+		"CozeToken":          2042,
 	}
 )
 
