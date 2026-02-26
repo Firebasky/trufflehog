@@ -70,6 +70,7 @@ var (
 
 // Keywords are used for efficiently pre-filtering chunks.
 // Use identifiers in the secret preferably, or the provider name.
+// add
 func (s Scanner) Keywords() []string {
 	return []string{"sk-", "DASHSCOPE","sk-sp-"}
 }
