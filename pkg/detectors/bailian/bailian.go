@@ -65,13 +65,13 @@ var (
 
 	defaultClient = common.SaneHttpClient()
 
-	SKToken = regexp.MustCompile(`\b(sk-[a-z0-9]{32})[\"';\s]*`)
+	SKToken = regexp.MustCompile(`\b(sk-(?:sp-)?[a-z0-9]{32})["';\s]*`)
 )
 
 // Keywords are used for efficiently pre-filtering chunks.
 // Use identifiers in the secret preferably, or the provider name.
 func (s Scanner) Keywords() []string {
-	return []string{"sk-", "DASHSCOPE"}
+	return []string{"sk-", "DASHSCOPE","sk-sp-"}
 }
 
 func (s Scanner) Description() string {
