@@ -43,7 +43,7 @@ var (
 // Keywords are used for efficiently pre-filtering chunks.
 // Use identifiers in the secret preferably, or the provider name.
 func (s Scanner) Keywords() []string {
-	return []string{"LTAI", "ak", "Access_Key_Id", "AccessKey", "AccessKeyId", "AccessKeySecret"}
+	return []string{"LTAI", "Access_Key_Id", "AccessKey", "AccessKeyId", "AccessKeySecret"}
 }
 
 func (s Scanner) Description() string {
