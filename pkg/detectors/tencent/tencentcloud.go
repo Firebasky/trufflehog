@@ -8,7 +8,7 @@ import (
 	cvm "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cvm/v20170312"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/common"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors"
-	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detectorspb"
+	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detector_typepb"
 	"net/http"
 	"strings"
 )
@@ -65,7 +65,7 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 			resIdMatch := strings.TrimSpace(idMatch[1])
 
 			s1 := detectors.Result{
-				DetectorType: detectorspb.DetectorType_Tencent,
+				DetectorType: detector_typepb.DetectorType_Tencent,
 				Raw:          []byte(resIdMatch + ":" + resMatch),
 				RawV2:        []byte(resMatch),
 			}
@@ -104,6 +104,6 @@ func verifyTencent(ctx context.Context, client *http.Client, resIdMatch, resMatc
 	return true, nil
 }
 
-func (s Scanner) Type() detectorspb.DetectorType {
-	return detectorspb.DetectorType_Tencent
+func (s Scanner) Type() detector_typepb.DetectorType {
+	return detector_typepb.DetectorType_Tencent
 }

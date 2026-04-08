@@ -4,7 +4,7 @@ import (
 	"github.com/baidubce/bce-sdk-go/services/bcc"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/common"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors"
-	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detectorspb"
+	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detector_typepb"
 	"net/http"
 	"strings"
 )
@@ -106,7 +106,7 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 			resIdMatch := strings.TrimSpace(idMatch[1])
 
 			s1 := detectors.Result{
-				DetectorType: detectorspb.DetectorType_Baidu2,
+				DetectorType: detector_typepb.DetectorType_Baidu2,
 				Raw:          []byte(resIdMatch + ":" + resMatch),
 				RawV2:        []byte(resMatch),
 			}
@@ -140,6 +140,6 @@ func verifyBaidu(ctx context.Context, client *http.Client, resIdMatch, resMatch 
 	}
 }
 
-func (s Scanner) Type() detectorspb.DetectorType {
-	return detectorspb.DetectorType_Baidu2
+func (s Scanner) Type() detector_typepb.DetectorType {
+	return detector_typepb.DetectorType_Baidu2
 }

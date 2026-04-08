@@ -11,7 +11,7 @@ import (
 
 	"github.com/trufflesecurity/trufflehog/v3/pkg/common"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors"
-	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detectorspb"
+	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detector_typepb"
 )
 
 type Scanner struct {
@@ -106,7 +106,7 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 
 		// 创建检测结果
 		s1 := detectors.Result{
-			DetectorType: detectorspb.DetectorType_BitcoinWIF,
+			DetectorType: detector_typepb.DetectorType_BitcoinWIF,
 			Raw:          []byte(wif),
 			Redacted:     wif[:8] + "..." + wif[len(wif)-4:], // 只显示前8位和后4位
 		}
@@ -204,6 +204,6 @@ func verifyAddressOnChain(ctx context.Context, client *http.Client, address stri
 	return false, extraData, nil
 }
 
-func (s Scanner) Type() detectorspb.DetectorType {
-	return detectorspb.DetectorType_BitcoinWIF
+func (s Scanner) Type() detector_typepb.DetectorType {
+	return detector_typepb.DetectorType_BitcoinWIF
 }

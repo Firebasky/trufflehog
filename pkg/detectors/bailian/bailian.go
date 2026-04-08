@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/common"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors"
-	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detectorspb"
+	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detector_typepb"
 	"io"
 	"net/http"
 	"strings"
@@ -96,7 +96,7 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 		tokenMatch := strings.TrimSpace(match[1])
 
 		s1 := detectors.Result{
-			DetectorType: detectorspb.DetectorType_BaiLian,
+			DetectorType: detector_typepb.DetectorType_BaiLian,
 			Raw:          []byte(tokenMatch),
 		}
 
@@ -157,6 +157,6 @@ func verifyBaiLian(ctx context.Context, client *http.Client, tokenMatch string) 
 	}
 }
 
-func (s Scanner) Type() detectorspb.DetectorType {
-	return detectorspb.DetectorType_BaiLian
+func (s Scanner) Type() detector_typepb.DetectorType {
+	return detector_typepb.DetectorType_BaiLian
 }

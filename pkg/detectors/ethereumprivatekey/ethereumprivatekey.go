@@ -13,7 +13,7 @@ import (
 
 	"github.com/trufflesecurity/trufflehog/v3/pkg/common"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors"
-	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detectorspb"
+	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detector_typepb"
 )
 
 type Scanner struct {
@@ -213,7 +213,7 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 
 		// 创建检测结果
 		s1 := detectors.Result{
-			DetectorType: detectorspb.DetectorType_EthereumPrivateKey,
+			DetectorType: detector_typepb.DetectorType_EthereumPrivateKey,
 			Raw:          []byte(key),
 			Redacted:     key[:10] + "..." + key[len(key)-6:], // 显示前10位和后6位
 		}
@@ -309,6 +309,6 @@ func verifyAddressOnChain(ctx context.Context, client *http.Client, address stri
 	return false, extraData, nil
 }
 
-func (s Scanner) Type() detectorspb.DetectorType {
-	return detectorspb.DetectorType_EthereumPrivateKey
+func (s Scanner) Type() detector_typepb.DetectorType {
+	return detector_typepb.DetectorType_EthereumPrivateKey
 }

@@ -3,7 +3,7 @@ package volcengine
 import (
 	"github.com/trufflesecurity/trufflehog/v3/pkg/common"
 	"github.com/trufflesecurity/trufflehog/v3/pkg/detectors"
-	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detectorspb"
+	"github.com/trufflesecurity/trufflehog/v3/pkg/pb/detector_typepb"
 	"github.com/volcengine/volcengine-go-sdk/service/vpc"
 	"github.com/volcengine/volcengine-go-sdk/volcengine"
 	"github.com/volcengine/volcengine-go-sdk/volcengine/credentials"
@@ -94,7 +94,7 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 			resIdMatch := strings.TrimSpace(idMatch[1])
 
 			s1 := detectors.Result{
-				DetectorType: detectorspb.DetectorType_Volcengine,
+				DetectorType: detector_typepb.DetectorType_Volcengine,
 				Raw:          []byte(resIdMatch + ":" + resMatch),
 				RawV2:        []byte(resMatch),
 			}
@@ -146,6 +146,6 @@ func verifyVolcengine(ctx context.Context, client *http.Client, resIdMatch, resM
 	return true, nil
 }
 
-func (s Scanner) Type() detectorspb.DetectorType {
-	return detectorspb.DetectorType_Volcengine
+func (s Scanner) Type() detector_typepb.DetectorType {
+	return detector_typepb.DetectorType_Volcengine
 }
